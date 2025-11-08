@@ -2,7 +2,7 @@
 // Поддерживает фильтрацию по промту и пагинацию
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { ERROR_MESSAGES, formatSupabaseError } from '@/lib/error-messages'
 
 /**
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0', 10)
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()

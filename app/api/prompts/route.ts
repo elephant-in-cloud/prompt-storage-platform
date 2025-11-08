@@ -2,7 +2,7 @@
 // Поддерживает фильтрацию по query параметрам и полнотекстовый поиск
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { promptSchema } from '@/lib/validations'
 import { logPromptCreate } from '@/lib/audit-logger'
 import { ERROR_MESSAGES, formatSupabaseError } from '@/lib/error-messages'
@@ -28,12 +28,14 @@ export async function GET(request: NextRequest) {
     const ownerId = searchParams.get('owner_id')
     
     // Создание серверного клиента с auth контекстом
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()
     
-    if (!user) {
+    // Для публичных промтов авторизация не требуется
+    // Для личных промтов требуется авторизация
+    if (!publicOnly && !user) {
       return NextResponse.json(
         { error: ERROR_MESSAGES.AUTH_UNAUTHORIZED },
         { status: 401 }
@@ -139,7 +141,7 @@ export async function POST(request: NextRequest) {
     const validatedData = validationResult.data
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()

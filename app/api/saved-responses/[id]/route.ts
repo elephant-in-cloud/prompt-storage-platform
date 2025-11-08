@@ -1,7 +1,7 @@
 // API Route для работы с конкретным сохраненным ответом: GET, DELETE
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { logResponseDelete } from '@/lib/audit-logger'
 import { ERROR_MESSAGES, formatSupabaseError } from '@/lib/error-messages'
 
@@ -17,7 +17,7 @@ export async function GET(
     const { id } = params
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()
@@ -89,7 +89,7 @@ export async function DELETE(
     const { id } = params
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()

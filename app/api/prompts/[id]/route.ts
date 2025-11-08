@@ -2,7 +2,7 @@
 // Поддерживает логику копирования публичных промтов при редактировании
 
 import { NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/supabase/server'
 import { promptSchema } from '@/lib/validations'
 import { logPromptEdit, logPromptDelete } from '@/lib/audit-logger'
 import { ERROR_MESSAGES, formatSupabaseError, CONFIRMATION_MESSAGES } from '@/lib/error-messages'
@@ -22,7 +22,7 @@ export async function GET(
     const { id } = params
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()
@@ -115,7 +115,7 @@ export async function PUT(
     const validatedData = validationResult.data
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()
@@ -272,7 +272,7 @@ export async function DELETE(
     const { id } = params
     
     // Создание серверного клиента
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()

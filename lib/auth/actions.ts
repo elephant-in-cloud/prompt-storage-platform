@@ -4,7 +4,7 @@
 // Эти функции выполняются на сервере и обрабатывают вход/регистрацию
 
 import { redirect } from 'next/navigation'
-import { createServerClient } from '../supabase/server'
+import { createClient } from '../supabase/server'
 import { loginSchema, signupSchema } from '../validations'
 import { ERROR_MESSAGES } from '../error-messages'
 
@@ -45,7 +45,7 @@ export async function login(formData: FormData): Promise<ActionResult> {
     }
     
     // Создание серверного клиента Supabase
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Попытка входа
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -110,7 +110,7 @@ export async function signup(formData: FormData): Promise<ActionResult> {
     }
     
     // Создание серверного клиента Supabase
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Попытка регистрации
     const { data, error } = await supabase.auth.signUp({
@@ -176,7 +176,7 @@ export async function signup(formData: FormData): Promise<ActionResult> {
  */
 export async function logout(): Promise<ActionResult> {
   try {
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     const { error } = await supabase.auth.signOut()
     

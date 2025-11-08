@@ -1,7 +1,7 @@
 // Утилита для логирования действий пользователей в audit_logs
 // Все действия логируются с детальной информацией для отслеживания
 
-import { createServerClient } from './supabase/server'
+import { createClient } from './supabase/server'
 import { TablesInsert } from '@/types/database'
 
 // Типы действий для логирования
@@ -34,7 +34,7 @@ export interface AuditLogParams {
 export async function logAudit(params: AuditLogParams): Promise<string | null> {
   try {
     // Создание серверного клиента для получения текущего пользователя
-    const supabase = await createServerClient()
+    const supabase = await createClient()
     
     // Получение текущего пользователя
     const { data: { user } } = await supabase.auth.getUser()

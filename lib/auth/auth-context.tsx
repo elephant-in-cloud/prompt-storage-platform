@@ -3,9 +3,9 @@
 // Auth Context Provider для управления состоянием аутентификации
 // Предоставляет информацию о текущем пользователе и функции auth
 
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState, useMemo } from 'react'
 import { User } from '@supabase/supabase-js'
-import { supabase } from '../supabase/client'
+import { createClient } from '../supabase/client'
 import { Tables } from '@/types/database'
 
 // Тип для профиля пользователя
@@ -31,6 +31,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
   const [loading, setLoading] = useState(true)
+  
+  // Создаем клиент Supabase один раз с помощью useMemo
+  const supabase = useMemo(() => createClient(), [])
 
   // Функция загрузки профиля пользователя
   const loadProfile = async (userId: string) => {
@@ -97,6 +100,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => {
       subscription.unsubscribe()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // Предоставление контекста
