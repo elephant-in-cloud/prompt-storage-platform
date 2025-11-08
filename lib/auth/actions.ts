@@ -28,22 +28,22 @@ type ActionResult = {
  * @returns Результат операции с сообщением или ошибками
  */
 export async function login(formData: FormData): Promise<ActionResult> {
-  try {
-    // Получение данных из формы
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-    
-    // Валидация данных с помощью zod
-    const validationResult = loginSchema.safeParse({ email, password })
-    
-    if (!validationResult.success) {
-      // Возврат ошибок валидации
-      return {
-        success: false,
-        errors: validationResult.error.flatten().fieldErrors
-      }
+  // Получение данных из формы
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  
+  // Валидация данных с помощью zod
+  const validationResult = loginSchema.safeParse({ email, password })
+  
+  if (!validationResult.success) {
+    // Возврат ошибок валидации
+    return {
+      success: false,
+      errors: validationResult.error.flatten().fieldErrors
     }
-    
+  }
+  
+  try {
     // Создание серверного клиента Supabase
     const supabase = await createClient()
     
@@ -62,6 +62,7 @@ export async function login(formData: FormData): Promise<ActionResult> {
     }
     
     // При успешном входе редирект на главную страницу
+    // redirect бросает исключение NEXT_REDIRECT, которое нужно пробросить дальше
     if (data.session) {
       redirect('/my-prompts')
     }
@@ -70,6 +71,11 @@ export async function login(formData: FormData): Promise<ActionResult> {
       success: true
     }
   } catch (error) {
+    // Если это NEXT_REDIRECT, пробрасываем дальше
+    if ((error as any)?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw error
+    }
+    
     console.error('Неожиданная ошибка при входе:', error)
     return {
       success: false,
@@ -88,27 +94,27 @@ export async function login(formData: FormData): Promise<ActionResult> {
  * @returns Результат операции с сообщением или ошибками
  */
 export async function signup(formData: FormData): Promise<ActionResult> {
-  try {
-    // Получение данных из формы
-    const email = formData.get('email') as string
-    const password = formData.get('password') as string
-    const confirmPassword = formData.get('confirmPassword') as string
-    
-    // Валидация данных с помощью zod
-    const validationResult = signupSchema.safeParse({
-      email,
-      password,
-      confirmPassword
-    })
-    
-    if (!validationResult.success) {
-      // Возврат ошибок валидации
-      return {
-        success: false,
-        errors: validationResult.error.flatten().fieldErrors
-      }
+  // Получение данных из формы
+  const email = formData.get('email') as string
+  const password = formData.get('password') as string
+  const confirmPassword = formData.get('confirmPassword') as string
+  
+  // Валидация данных с помощью zod
+  const validationResult = signupSchema.safeParse({
+    email,
+    password,
+    confirmPassword
+  })
+  
+  if (!validationResult.success) {
+    // Возврат ошибок валидации
+    return {
+      success: false,
+      errors: validationResult.error.flatten().fieldErrors
     }
-    
+  }
+  
+  try {
     // Создание серверного клиента Supabase
     const supabase = await createClient()
     
@@ -158,6 +164,11 @@ export async function signup(formData: FormData): Promise<ActionResult> {
       success: true
     }
   } catch (error) {
+    // Если это NEXT_REDIRECT, пробрасываем дальше
+    if ((error as any)?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw error
+    }
+    
     console.error('Неожиданная ошибка при регистрации:', error)
     return {
       success: false,
@@ -191,6 +202,11 @@ export async function logout(): Promise<ActionResult> {
     // Редирект на страницу входа
     redirect('/login')
   } catch (error) {
+    // Если это NEXT_REDIRECT, пробрасываем дальше
+    if ((error as any)?.digest?.startsWith('NEXT_REDIRECT')) {
+      throw error
+    }
+    
     console.error('Неожиданная ошибка при выходе:', error)
     return {
       success: false,
