@@ -63,7 +63,7 @@ export async function login(formData: FormData): Promise<ActionResult> {
     
     // При успешном входе редирект на главную страницу
     if (data.session) {
-      redirect('/prompts')
+      redirect('/my-prompts')
     }
     
     return {
