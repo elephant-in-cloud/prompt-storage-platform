@@ -47,8 +47,8 @@
 
 1. **Клонирование репозитория**
 ```bash
-git clone https://github.com/yourusername/prompt-storage.git
-cd prompt-storage
+git clone https://github.com/elephant-in-cloud/prompt-storage-platform.git
+cd prompt-storage-platform
 ```
 
 2. **Установка зависимостей**
@@ -221,7 +221,7 @@ MIT License - смотрите файл LICENSE для деталей
 
 Если у вас возникли вопросы или проблемы:
 
-1. Проверьте [Issues](https://github.com/yourusername/prompt-storage/issues)
+1. Проверьте [Issues](https://github.com/elephant-in-cloud/prompt-storage-platform/issues)
 2. Создайте новый Issue с подробным описанием
 3. Проверьте логи в Supabase Dashboard → Logs
 
