@@ -38,7 +38,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Функция загрузки профиля пользователя
   const loadProfile = async (userId: string) => {
     try {
-      console.log('Загрузка профиля для userId:', userId)
+      console.log('=== Начало загрузки профиля ===')
+      console.log('userId:', userId)
+      console.log('Supabase client создан:', !!supabase)
       
       const { data, error } = await supabase
         .from('profiles')
@@ -46,21 +48,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         .eq('id', userId)
         .single()
       
-      console.log('Результат загрузки профиля:', { data, error })
+      console.log('=== Результат запроса ===')
+      console.log('data:', data)
+      console.log('error:', error)
       
       if (error) {
-        console.error('Ошибка Supabase при загрузке профиля:', {
-          message: error.message,
-          details: error.details,
-          hint: error.hint,
-          code: error.code
-        })
+        console.error('=== ОШИБКА SUPABASE ===')
+        console.error('message:', error.message)
+        console.error('details:', error.details)
+        console.error('hint:', error.hint)
+        console.error('code:', error.code)
+        console.error('Полная ошибка:', JSON.stringify(error, null, 2))
+        
+        // Проверим сессию
+        const { data: { session } } = await supabase.auth.getSession()
+        console.error('Текущая сессия:', session ? 'есть' : 'нет')
+        if (session) {
+          console.error('User ID из сессии:', session.user.id)
+        }
+        
         throw error
       }
       
+      console.log('=== Профиль успешно загружен ===')
       setProfile(data)
-    } catch (error) {
-      console.error('Ошибка загрузки профиля:', error)
+    } catch (error: any) {
+      console.error('=== ПЕРЕХВАЧЕНА ОШИБКА ===')
+      console.error('Тип ошибки:', typeof error)
+      console.error('error.message:', error?.message)
+      console.error('error.name:', error?.name)
+      console.error('Полная ошибка (stringify):', JSON.stringify(error, null, 2))
       setProfile(null)
     }
   }
