@@ -38,13 +38,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Функция загрузки профиля пользователя
   const loadProfile = async (userId: string) => {
     try {
+      console.log('Загрузка профиля для userId:', userId)
+      
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', userId)
         .single()
       
-      if (error) throw error
+      console.log('Результат загрузки профиля:', { data, error })
+      
+      if (error) {
+        console.error('Ошибка Supabase при загрузке профиля:', {
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          code: error.code
+        })
+        throw error
+      }
+      
       setProfile(data)
     } catch (error) {
       console.error('Ошибка загрузки профиля:', error)
