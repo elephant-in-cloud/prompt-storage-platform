@@ -4,6 +4,7 @@
 // Эти функции выполняются на сервере и обрабатывают вход/регистрацию
 
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '../supabase/server'
 import { loginSchema, signupSchema } from '../validations'
 import { ERROR_MESSAGES } from '../error-messages'
@@ -64,6 +65,8 @@ export async function login(formData: FormData): Promise<ActionResult> {
     // При успешном входе редирект на главную страницу
     // redirect бросает исключение NEXT_REDIRECT, которое нужно пробросить дальше
     if (data.session) {
+      // Revalidate пути для обновления кеша и применения новых cookies
+      revalidatePath('/', 'layout')
       redirect('/my-prompts')
     }
     
@@ -199,7 +202,8 @@ export async function logout(): Promise<ActionResult> {
       }
     }
     
-    // Редирект на страницу входа
+    // Revalidate и редирект на страницу входа
+    revalidatePath('/', 'layout')
     redirect('/login')
   } catch (error) {
     // Если это NEXT_REDIRECT, пробрасываем дальше

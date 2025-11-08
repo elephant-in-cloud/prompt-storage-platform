@@ -73,6 +73,11 @@ export default function LoginPage() {
       }
       // Если успешно, Server Action выполнит редирект
     } catch (error) {
+      // Если это NEXT_REDIRECT, пробрасываем дальше (не перехватываем!)
+      if ((error as any)?.digest?.startsWith('NEXT_REDIRECT')) {
+        throw error
+      }
+      
       console.error('Ошибка при входе:', error)
       setServerError(ERROR_MESSAGES.UNKNOWN_ERROR)
     } finally {

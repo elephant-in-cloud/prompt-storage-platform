@@ -14,18 +14,18 @@ export default function AppLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, isLoading } = useAuth()
+  const { user, loading } = useAuth()
   const router = useRouter()
 
   // Перенаправление на страницу входа, если пользователь не авторизован
   useEffect(() => {
-    if (!isLoading && !user) {
+    if (!loading && !user) {
       router.push('/login')
     }
-  }, [user, isLoading, router])
+  }, [user, loading, router])
 
   // Показываем загрузку пока проверяем авторизацию
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
